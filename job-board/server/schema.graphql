@@ -1,0 +1,55 @@
+type Query {
+  #query name (#its variables): #the type it returns (defined also in the schema)
+  company(id: ID!): Company
+  # passing query vars
+  job(id: ID!): Job
+  jobs(limit: Int, offset: Int): JobSubList!
+  # the ! in array : no null values in it , but it can be fully empty .
+}
+
+type JobSubList {
+  items: [Job!]!
+  total_count: Int
+}
+
+type Mutation {
+  createJob(input: CreateJobInput!): Job
+  deleteJob(id: ID!): Job
+  updateJob(input: UpdateJobInput!): Job
+}
+
+type Company {
+  id: ID!
+  name: String!
+  description: String
+  jobs: [Job!]!
+  # no null values in the array , and the array itself cannot be null .
+}
+
+type Job { # capital
+  id: ID! # a string ( scalar value )
+  # the ! means mandatory : cannot be null .
+  # the client can still not request it .
+  # not all graphql client implementations have the Date scalar .
+
+  # the following is description comments appears on the schema and description
+  # on apollo client .
+  """
+  The __date__ when the job was published, in ISO-8601 format, E.g. `2022-12-31`
+  """
+  date: String!
+  title: String! # no commas
+  company: Company!
+  description: String
+}
+
+input CreateJobInput {
+  title: String!
+  description: String
+}
+
+input UpdateJobInput {
+  id: ID!
+  title: String
+  description: String
+}
